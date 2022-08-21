@@ -3,24 +3,22 @@ from configs import cfg
 
 
 def content_loss(content_feature, gen_feature):
-    return tf.reduce_sum(tf.square(content_feature, gen_feature))
+    return tf.reduce_sum(tf.square(content_feature - gen_feature)) / 2.
 
 
 def gram_matrix(feature_map):
-    feature_map = tf.transpose(feature_map, perm=[2, 0, 1])
-    feature_map = tf.reshape(feature_map, shape=(tf.shape(feature_map)[0], -1))
-    return tf.matmul(feature_map, feature_map, transpose_b=True)
+    return tf.einsum("ijc,ijd->cd", feature_map, feature_map)
 
 
 def style_loss(style_feature, gen_feature):
-    feature_map_size = tf.shape(style_feature)[1] * tf.shape(style_feature)[2]
-    num_filters = tf.shape(style_feature)[0]
-    scale_factor = 1 / (4 * feature_map_size * num_filters)
+    feature_map_size = tf.cast(tf.shape(style_feature)[0] * tf.shape(style_feature)[1], dtype=tf.float32)
+    num_filters = tf.cast(tf.shape(style_feature)[-1], dtype=tf.float32)
+    scale_factor = 4. * (feature_map_size ** 2) * (num_filters ** 2)
 
     style_gram = gram_matrix(style_feature)
     gen_feature = gram_matrix(gen_feature)
 
-    return scale_factor * tf.reduce_sum(tf.square(style_gram - gen_feature))
+    return tf.reduce_sum(tf.square(style_gram - gen_feature)) / scale_factor
 
 
 def total_loss(feature_extractor, style_img, content_img, gen_img):
@@ -46,3 +44,9 @@ def total_loss(feature_extractor, style_img, content_img, gen_img):
     loss += cfg.beta * sl
 
     return loss
+
+
+if __name__ == "__main__":
+    temp1 = tf.random.normal(shape=(1, 32, 32, 512))
+    temp2 = tf.random.normal(shape=(32, 32, 512))
+    print(gram_matrix(temp2).shape)

@@ -1,7 +1,7 @@
-from configs import Config
+from configs.Config import Configs
 
 
 __all__ = ['cfg']
 
 
-cfg = Config()
+cfg = Configs()

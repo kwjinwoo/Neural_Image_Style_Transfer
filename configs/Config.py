@@ -1,4 +1,4 @@
-__all__ = ["Config"]
+__all__ = ["Configs"]
 
 
 class Configs:
@@ -11,6 +11,14 @@ class Configs:
             "block4_conv1",
             "block5_conv1"
         ]
-        self.alpha = 1
-        self.beta = 10
+        self.alpha = 8
+        self.beta = 1e4
         self.weighting_factor = 0.2
+
+        self.iteration = 4000
+        self.inter_save = 100
+
+
+if __name__ == "__main__":
+    cfg = Configs()
+    print(cfg.alpha / cfg.beta)
