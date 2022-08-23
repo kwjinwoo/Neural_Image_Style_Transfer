@@ -7,7 +7,10 @@ def content_loss(content_feature, gen_feature):
 
 
 def gram_matrix(feature_map):
-    return tf.einsum("ijc,ijd->cd", feature_map, feature_map)
+    feature_map = tf.transpose(feature_map, (2, 0, 1))
+    feature_map = tf.reshape(feature_map, (tf.shape(feature_map)[0], -1))
+    gram = tf.matmul(feature_map, tf.transpose(feature_map))
+    return gram
 
 
 def style_loss(style_feature, gen_feature):

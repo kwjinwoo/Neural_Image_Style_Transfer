@@ -11,8 +11,8 @@ class Configs:
             "block4_conv1",
             "block5_conv1"
         ]
-        self.alpha = 8
-        self.beta = 1e4
+        self.alpha = 1
+        self.beta = 1e3
         self.weighting_factor = 0.2
 
         self.iteration = 4000
