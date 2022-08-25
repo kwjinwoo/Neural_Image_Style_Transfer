@@ -19,9 +19,9 @@ def style_loss(style_feature, gen_feature):
     scale_factor = 4. * (feature_map_size ** 2) * (num_filters ** 2)
 
     style_gram = gram_matrix(style_feature)
-    gen_feature = gram_matrix(gen_feature)
+    gen_gram = gram_matrix(gen_feature)
 
-    return tf.reduce_sum(tf.square(style_gram - gen_feature)) / scale_factor
+    return tf.reduce_sum(tf.square(style_gram - gen_gram)) / scale_factor
 
 
 def total_loss(feature_extractor, style_img, content_img, gen_img):
